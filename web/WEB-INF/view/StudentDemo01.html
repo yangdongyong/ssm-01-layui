@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>所有数据</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css"/>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $(function (){
+            layui.use(['table'],function (){
+                let table = layui.table;
+
+                //渲染表格
+                table.render({
+                    elem:'#test1',
+                    url:'/stu/all',
+                    page:true,
+                    limit:10,
+                    limits:[10,20,30,40,50],
+                    height:'full-10',
+                    totaRow:true, //开启合计行
+                    toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+                    defaultToolbar: ['filter', 'exports', 'print'],  //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                    groups:10,
+                    unresize:true,//禁止列被拖拽
+
+                    cols:[[
+                        {field:'',title:'序号',width:100,type:'radio',fixed:'left'},
+                        {field:'id',title:'学生ID',sort:true},
+                        {field:'name',title: '学生姓名'},
+                        {field:'age',title: '学生年龄',templet:'#age'},
+                        {field:'',title: '操作',width: 300,align:'center',toolbar:'#toolbars'}
+
+                    ]],
+                    done:function (res,curr,count){
+
+                    }
+
+                })
+                //监听头部工具栏 toolbar
+                table.on('toolbar(test)',function (result){
+                    //获取当前被选中行的数据 并返回记录
+                 let checkStatus =  table.checkStatus(result.config.id);
+                    console.log(checkStatus);
+                    //获取事件名
+                    let eventName = result.event;
+                    //获取被选择的记录的数组
+                    let data = checkStatus.data;
+                    console.log(data)
+
+                })
+
+            })
+        })
+
+    </script>
+
+
+</head>
+<body>
+    <table id="test1" lay-filter="test"></table>
+
+    <!--右侧工具栏-->
+    <script type="text/html" id="toolbars">
+        <a class="layui-btn layui-btn-xs" lay-event="detail" >查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" >删除</a>
+    </script>
+
+    <!--表格工具栏 -->
+    <script type="text/html" id="toolbarDemo">
+    <div>
+        <input type="button" class="layui-btn" value="获取选择行的数据" style="display: inline;" lay-event="opens" id="btn1">
+        <input type="button" class="layui-btn" value="获取选择数目" lay-event="update" style="display: inline;">
+        <input type="button" class="layui-btn" value="验证是否全选" style="display: inline;" lay-event="delete">
+
+    </div>
+    </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <meta charset="UTF-8">
+    <title>所有学生</title>
+  <link rel="stylesheet" href="../../layui/css/layui.css"/>
+  <script src="../../layui/layui.js"></script>
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+
+
+
+
+    <script>
+      $(function () {
+          layui.use(['table','form',],function () {
+              var form = layui.form;
+              var table = layui.table;
+
+
+
+              // 自定义正则表达式验证规则
+              form.verify({
+                  names:[
+                      /^(?:[\u4e00-\u9fa5·]{2,16})$/
+                      ,'必须是中文姓名！'
+                  ],
+                  ages:[
+                      /^((1[0-5])|[1-9])?\d$/
+                      ,'请输入正确的年龄！'
+                  ]
+              })
+
+              //渲染表格
+              table.render({
+                  elem:'#test1',
+                  url:'/stu/all',
+                  page:true,
+                  limit:10,
+                  limits:[10,20,30,40,50],
+                  height:'full-10',
+                  totaRow:true, //开启合计行
+                  toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+                  defaultToolbar: ['filter', 'exports', 'print'],  //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                  groups:10,
+                  unresize:true,//禁止列被拖拽
+
+                  cols:[[
+                      {field:'',title:'序号',width:100,type:'radio',fixed:'left'},
+                      {field:'id',title:'学生ID',sort:true},
+                      {field:'name',title: '学生姓名'},
+                      {field:'age',title: '学生年龄',templet:'#age'},
+                      {field:'',title: '操作',width: 300,align:'center',toolbar:'#toolbars'}
+                              // function (d){
+                          // var data = "";
+                          // if (d.age % 2==0){
+                          //   data="<div style=\'color: red;\'>"+d.age+"</div>"
+                          // }else {
+                          //     data="<div>"+d.age+"</div>"
+                          // }
+                          // return data;
+                          // }}
+
+                  ]],
+                  done:function (res,curr,count){
+
+                  }
+
+              })
+              //监听工具条事件
+              table.on('tool(test)',function (object){
+                 let  data = object.data; //获取当前行数据
+                 let  layEvent = object.event; //获取lay-event对应的值(也可以是表头的event 参数对应的值)
+                 let  tr = object.tr //获得当前行tr 的DOM对象(有的话)
+                  console.log(data)
+                  if(layEvent == 'detail'){
+                      layer.open({
+                          type: 2,
+                          title: '查看',
+                          content: '/test/temp',
+                          area: ['70%','90%'],
+                          btn:['关闭'],
+                          yes:function (index,layer){
+                              console.log(index,layer)
+
+                              layer.close(index)
+                          },cancel: function (){
+                              //return false 开启关闭按钮无效
+                          }
+
+                      })
+                  }else if (layEvent == 'edit'){
+
+
+
+                      layer.msg("点击了编辑",{icon:5});
+
+                  }else if(layEvent == 'del'){
+
+                      //询问框
+                      layer.confirm('确定删除？',{icon: 3,title:'提示'},function (index){
+                              $.ajax({
+                                  url:'/test/delete',
+                                  data: {
+                                      id:data.id
+                                  },
+                                  success:function (data){
+                                      layer.msg('删除成功！');
+
+                                  }
+                              })
+
+                      })
+                  }
+              })
+
+
+
+
+              //监听头部工具栏
+             table.on('toolbar(test)',function (object){
+                    //获取选中行的数据
+                let id =  table.checkStatus(object.config.id)
+
+                  if (object.event == 'update' ){
+
+                      if (id.data.length == 0){ //判断是否选中了一行 没有则提示
+                          layer.msg('请选择一行');
+                          return ;
+                      }
+                      layer.msg('修改');
+                  }
+
+                  if (object.event == 'opens'){
+
+
+
+                      layer.open({
+                          type:2,
+                          title:'添加',
+                          content: '/test/ss',
+                          area: ['70%','90%'],
+                          btn:['关闭'],
+                          yes:function (index,layer){
+                              console.log(index,layer)
+
+                              layer.close(index)
+                          },cancel: function (){
+                              //return false 开启关闭按钮无效
+                          }
+                      })
+                  }
+
+
+              })
+
+
+              //监听表单提交
+              form.on("submit(froms)",function (data){
+
+                  //表格重置
+                  table.reload('test1',{
+                      where: data.field,//条件查询
+                  })
+
+                  return false; //阻止表单跳转，如果跳转去掉这行即可
+              })
+
+
+
+
+
+
+          })
+      })
+
+
+    </script>
+</head>
+<body>
+<table id="test1" lay-filter="test"></table>
+
+<!--    自定义模板-->
+    <script type="text/html" id="age">
+<!--    判断-->
+    {{#  if(d.age >=20 ){ }}
+    <div style="color: red">{{d.age}}</div>
+    {{#  } else { }}
+    <div>{{d.age}}</div>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="toolbars">
+    <a class="layui-btn layui-btn-xs" lay-event="detail" >查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" >删除</a>
+
+</script>
+
+<script type="text/html" id="toolbarDemo">
+<!--头部工具栏 标签显示在一行：display：inline-->
+    <div style="text-align: center">
+        <form class="layui-form" action="">
+            <label style="display: inline">部门名称</label>
+            <input name="name" class="layui-input" style="display: inline ;width: 150px">
+            <input type="button" class="layui-btn " lay-submit lay-filter="froms" value="查询" style="display: inline" >
+        </form>
+        <input type="button" class="layui-btn" value="添加" style="display: inline;" lay-event="opens" id="btn1">
+        <input type="button" class="layui-btn" value="修改" lay-event="update" style="display: inline;">
+        <input type="button" class="layui-btn" value="删除" style="display: inline;" lay-event="delete">
+    </div>
+</script>
+
+
+</body>
+</html>

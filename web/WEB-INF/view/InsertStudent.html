@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css"/>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+
+
+    <script>
+        $(function () {
+            layui.use(['form'],function () {
+                var form = layui.form;
+
+
+                // 自定义正则表达式验证规则
+                form.verify({
+                    names:[
+                        /^(?:[\u4e00-\u9fa5·]{2,16})$/
+                        ,'必须是中文姓名！'
+                    ],
+                    ages:[
+                        /^((1[0-5])|[1-9])?\d$/
+                        ,'请输入正确的年龄！'
+                    ]
+                })
+                // 监听用户提交信息
+                form.on("submit(formDemo)",function (data){
+
+
+                    console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+                    console.log(data.form) //被执行提交的from对象，一般存在form标签时才会返回
+                    console.log(data.field)//当前容器的全部表单字段，名值对形式{name:value}
+
+
+                 $.ajax({
+                     url:'/test/insert',
+                     data: data.field,
+                     success:function (result){
+                         alert(result)
+                         if (result){
+                             let index = parent.layer.getFrameIndex(window.name);//得到iframe层的索引
+                              parent.layer.close(index) //执行关闭
+                         }
+
+
+                         // window.location.reload() //刷新网页
+                         // alert("网页刷新了！")
+
+                     }
+
+                 })
+                    return false;
+            })
+        })
+        })
+    </script>
+</head>
+<body>
+
+
+<form class="layui-form" > <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">名字</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="name"autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">年龄</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="age" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>
