@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--配置  status：框架本身日志级别-->
+<Configuration status="warn" >
+<!--    定义多个常量-->
+    <Properties>
+        <Property name="filename">C:\\Users\\Lenovo\\Desktop\\temp\\temp.log</Property>
+    </Properties>
+
+    <Appenders>
+<!--        输出到控制台-->
+        <Console name="Console">
+            <PatternLayout pattern="%p  %d{yyyy/MM/dd HH:mm:ss,SSS} %l %m%n"/>
+        </Console>
+
+<!--        按大小、时间输出文件 filePattern:新文件生成后，设置旧文件 打包名称 格式-->
+        <RollingFile name="RollingFile" fileName="${filename}"
+                     filePattern="C:\\Users\\Lenovo\\Desktop\\temp\\temp.log-%d{yyyy-MM-dd-HH}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%p  %d{yyyy/MM/dd HH:mm:ss,SSS} %l %m%n</Pattern>
+            </PatternLayout>
+
+<!--            设置文件生成策略-->
+            <Policies>
+<!--                cron表达式  schedule:cron表达式   EvaluationOnStartup：是否开启-->
+               <CronTriggeringPolicy schedule="0/2 * * * * ?" EvaluationOnStartup="true"></CronTriggeringPolicy>
+
+<!--                按小时执行   interval：设置间隔时间（单位：小时）   modulate：是否开启-->
+<!--                <TimeBasedTriggeringPolicy interval="2" modulate="true"/>-->
+
+<!--                设置文件大小 生产环境最多2M-->
+<!--                <SizeBasedTriggeringPolicy size="1kb" />-->
+
+            </Policies>
+<!--            保留最近五个日志文件-->
+            <DefaultRolloverStrategy max="5"/>
+
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+<!--        level：日志级别-->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

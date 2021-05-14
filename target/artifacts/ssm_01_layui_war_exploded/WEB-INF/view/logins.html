@@ -1,0 +1,84 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+  <script type="text/javascript" src="../../js/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" href="../../layui/css/layui.css"/>
+  <script src="../../layui/layui.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      layui.use(['form'],function () {
+        var form = layui.form;
+
+
+
+        // 监听用户提交信息
+        form.on("submit(formDemo)",function (data){
+
+
+          console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+          console.log(data.form) //被执行提交的from对象，一般存在form标签时才会返回
+          console.log(data.field)//当前容器的全部表单字段，名值对形式{name:value}
+
+
+          $.ajax({
+            url:'/login/user',
+            data: data.field, // data.field,获取表单提交的所有数据
+            success:function (result){
+              if (result.code == 200){
+                alert("登录成功！")
+              }else if (result.msg == 404){
+                alert("密码错误！")
+                return ;
+              }
+
+              window.location.href="/test/jump"
+
+
+
+            }
+
+          })
+          return false;
+        })
+      })
+    })
+  </script>
+</head>
+<body>
+
+
+<form class="layui-form" style="text-align: center" > <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">账号</label>
+      <div class="layui-input-inline">
+        <input type="tel" name="username"autocomplete="off" class="layui-input">
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">密码</label>
+      <div class="layui-input-inline">
+        <input type="tel" name="password" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弹出层</title>
+  <link rel="stylesheet" href="layui/css/layui.css"/>
+  <script src="layui/layui.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
+
+  <script type="text/javascript">
+
+
+    //加载模块
+    layui.use('layer',function (){
+      var layer = layui.layer;
+      //信息
+      layer.open({
+        type:0,
+        title:'系统消息',
+        content:'Hello!'
+      })
+
+      //页面层
+      layer.open({
+        type:1,
+        title:'系统消息',
+        content:'Hello!'
+      })
+
+      //frame层
+      layer.open({
+        type:1,
+        title:'系统消息',
+        area:['70%','90%'], //设置宽高
+        content:"http://www.baidu.com"
+      })
+      //加载弹框
+      layer.load(3)
+    })
+  </script>
+</head>
+<body>
+
+</body>
+</html>
