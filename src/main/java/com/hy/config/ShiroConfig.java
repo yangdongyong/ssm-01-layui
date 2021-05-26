@@ -42,6 +42,9 @@ public class ShiroConfig {
         map.put("/layui/**","anon");
         map.put("/css/*","anon");
         map.put("/font/*","anon");
+        map.put("/md/**","anon");
+        map.put("/sc/**","anon");
+        map.put("/testJson/**","anon");
         //指定所有url权限
         map.put("/**","authc");
         shiroFilterFactory.setFilterChainDefinitionMap(map);

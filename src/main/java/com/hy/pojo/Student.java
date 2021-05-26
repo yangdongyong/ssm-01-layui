@@ -13,11 +13,15 @@ import lombok.NoArgsConstructor;
  * @version: 1.0
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Student {
     @TableId(type= IdType.AUTO)
     private Integer id;
     private String name;
     private String age;
+
+    public Student(String name, String age) {
+        this.name = name;
+        this.age = age;
+    }
 }
